@@ -1,0 +1,220 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #081b29;
+    color: #ededed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 20px 10%;
+    background: transparent;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+}
+
+.logo {
+    font-size: 25px;
+    color: #ededed;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.navbar a {
+    font-size: 18px;
+    color: #ededed;
+    text-decoration: none;
+    font-weight: 500;
+    margin-left: 35px;
+    transition: .3s;
+}
+
+.navbar a:hover,
+.navbar a:active {
+    color: #00abf0;
+}
+
+.content-wrapper {
+    margin-top: 120px; /* Espacio para el header */
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+}
+
+.content-header h1 {
+    color: #ededed;
+    margin-bottom: 20px;
+}
+
+.box {
+    background: #0e2a3a;
+    border-radius: 8px;
+    padding: 30px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    margin-bottom: 20px;
+}
+
+.box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.box-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ededed;
+}
+
+.box-tools .btn {
+    background: #00abf0;
+    color: #081b29;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.box-tools .btn:hover {
+    background: #008acb;
+}
+
+.alert-success {
+    background-color: #2a4d3a;
+    color: #aed581;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.form-control {
+    background: rgba(0, 171, 240, 0.1);
+    border: 1px solid #00abf0;
+    border-radius: 5px;
+    color: #ededed;
+    padding: 10px;
+    margin-bottom: 15px;
+    width: 100%;
+    transition: .3s;
+}
+
+.form-control:focus {
+    background: rgba(0, 171, 240, 0.2);
+    border-color: #00abf0;
+    outline: none;
+}
+
+label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+button {
+    background: #00abf0;
+    color: #081b29;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: .3s;
+}
+
+button:hover {
+    background: #008acb;
+}
+
+.table {
+    background: #fff;
+    color: #081b29;
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.table th, .table td {
+    padding: 15px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.table th {
+    background: #00abf0;
+    color: #fff;
+    text-align: center;
+}
+
+.modal-header, .modal-footer {
+    background: #0e2a3a;
+    border: none;
+    padding: 15px;
+}
+
+.modal-title {
+    color: #ededed;
+}
+
+.modal-header .close {
+    color: #ededed;
+    cursor: pointer;
+}
+
+.modal-content {
+    background: #081b29;
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.modal-body .form-group label {
+    color: #ededed;
+}
+
+.modal-footer .btn-default {
+    background: transparent;
+    color: #00abf0;
+    border: 1px solid #00abf0;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.modal-footer .btn-default:hover {
+    background: #00abf0;
+    color: #081b29;
+}
+
+.modal-footer .btn-primary {
+    background: #00abf0;
+    color: #081b29;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.modal-footer .btn-primary:hover {
+    background: #008acb;
+}

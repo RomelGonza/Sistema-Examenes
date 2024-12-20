@@ -1,0 +1,93 @@
+<?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Admin extends CI_Controller {
+
+    public function __construct() {
+        parent::__construct();
+        $this->load->helper('url');
+    }
+
+    public function dashboard() {
+        $this->load->view('admin/dashboard');
+    }
+    public function add_user() {
+ 	$this->auth_model->register_user(); 
+	$this->session->set_flashdata('suc', 'Usuario agregado correctamente.'); 
+	redirect('admin/dashboard'); 
+	} 
+    public function view_users() { 
+	$data['users'] = $this->auth_model->get_all_users(); 
+	$this->load->view('admin/view_users', $data); 
+	}
+// En controllers/Admin.php, agrega este nuevo método
+public function resultados() {
+    if (!check_admin_role()) { // Asumiendo que tienes esta función helper
+        redirect('auth/login');
+    }
+    
+    $this->load->model('Resultado_model');
+    $data['title'] = 'Gestión de Resultados';
+    $data['resultados'] = $this->Resultado_model->obtener_resultados();
+    $data['carreras'] = $this->Resultado_model->obtener_carreras();
+    
+    $this->load->view('admin/header', $data); // Ajusta según tu estructura
+    $this->load->view('admin/resultados_view', $data);
+    $this->load->view('admin/footer');
+}
+
+public function importar_resultados() {
+    if (!check_admin_role()) {
+        redirect('auth/login');
+    }
+    
+    if($_FILES && $_FILES['archivo']['name']) {
+        $this->load->model('Resultado_model');
+        $contenido = file_get_contents($_FILES['archivo']['tmp_name']);
+        $lineas = explode("\n", $contenido);
+        
+        $carrera_actual = '';
+        $insertados = 0;
+        
+        foreach($lineas as $linea) {
+            if(strpos($linea, ']') !== false && preg_match('/\[(.*?)\]\s*(.*?)$/i', $linea, $matches)) {
+                $carrera_actual = trim($matches[2]);
+                continue;
+            }
+            
+            if(preg_match('/^\s*(\d+)\s+(\d{8})\s+(.*?)\s+(\d+\.\d+)\s*$/', $linea, $matches)) {
+                $data = array(
+                    'puesto' => $matches[1],
+                    'dni' => $matches[2],
+                    'apellidos_nombres' => trim($matches[3]),
+                    'puntaje' => $matches[4],
+                    'carrera' => $carrera_actual
+                );
+                
+                if($this->Resultado_model->insertar_resultado($data)) {
+                    $insertados++;
+                }
+            }
+        }
+        
+        $this->session->set_flashdata('success', "Se importaron $insertados registros correctamente");
+    }
+    redirect('admin/resultados');
+}
+
+public function buscar_resultados() {
+    if (!check_admin_role()) {
+        $this->output->set_status_header(401);
+        echo json_encode(['error' => 'No autorizado']);
+        return;
+    }
+    
+    $termino = $this->input->get('q');
+    $carrera = $this->input->get('carrera');
+    
+    $this->load->model('Resultado_model');
+    $resultados = $this->Resultado_model->buscar_resultados($termino, $carrera);
+    
+    echo json_encode($resultados);
+}
+}
