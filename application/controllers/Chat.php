@@ -1,11 +1,13 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
+
 class Chat extends CI_Controller {
     public function __construct() {
         parent::__construct();
         $this->load->model('chat_model');
         $this->load->library('session');
         
-        // Check if user is logged in
+        // Verificar sesión
         if (!$this->session->userdata('user_id')) {
             redirect('login');
         }
@@ -14,16 +16,17 @@ class Chat extends CI_Controller {
     public function index() {
         $data['user_id'] = $this->session->userdata('user_id');
         $data['role'] = $this->session->userdata('rol');
-        $this->load->view('view_chat', $data);
+        $this->load->view('chat/index', $data);
     }
     
     public function get_agents() {
-        // Get all admin users
+        header('Content-Type: application/json');
         $agents = $this->chat_model->get_agents();
         echo json_encode($agents);
     }
     
     public function get_messages() {
+        header('Content-Type: application/json');
         $other_user_id = $this->input->get('other_user_id');
         $user_id = $this->session->userdata('user_id');
         
@@ -31,7 +34,19 @@ class Chat extends CI_Controller {
         echo json_encode($messages);
     }
     
+    public function get_pending_chats() {
+        header('Content-Type: application/json');
+        if ($this->session->userdata('rol') !== 'admin') {
+            echo json_encode(['error' => 'Unauthorized']);
+            return;
+        }
+        
+        $pending = $this->chat_model->get_pending_chats($this->session->userdata('user_id'));
+        echo json_encode($pending);
+    }
+    
     public function send() {
+        header('Content-Type: application/json');
         $receiver_id = $this->input->post('receiver_id');
         $message = $this->input->post('message');
         $sender_id = $this->session->userdata('user_id');
@@ -41,4 +56,3 @@ class Chat extends CI_Controller {
         echo json_encode(['status' => $result ? 'success' : 'error']);
     }
 }
-<?
