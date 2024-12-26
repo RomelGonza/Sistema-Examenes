@@ -1,11 +1,14 @@
 <?php
 require 'vendor/autoload.php';
 
-use Ratchet\MessageComponentInterface;
-use Ratchet\ConnectionInterface;
+use Ratchet\Server\IoServer;
+use Ratchet\Http\HttpServer;
+use Ratchet\WebSocket\WsServer;
+use React\EventLoop\Factory;
 
-class ChatServer implements MessageComponentInterface {
+class ChatWebSocket implements MessageComponentInterface {
     protected $clients;
+    protected $users = [];
 
     public function __construct() {
         $this->clients = new \SplObjectStorage;
@@ -13,36 +16,49 @@ class ChatServer implements MessageComponentInterface {
 
     public function onOpen(ConnectionInterface $conn) {
         $this->clients->attach($conn);
-        echo "New connection! ({$conn->resourceId})\n";
+        echo "Nueva conexión! ({$conn->resourceId})\n";
     }
 
     public function onMessage(ConnectionInterface $from, $msg) {
-        foreach ($this->clients as $client) {
-            if ($from !== $client) {
-                $client->send($msg);
-            }
+        $data = json_decode($msg);
+        
+        if ($data->type === 'register') {
+            $this->users[$data->userId] = [
+                'conn' => $from,
+                'role' => $data->role
+            ];
+            return;
+        }
+        
+        if ($data->type === 'message' && isset($this->users[$data->receiver_id])) {
+            $this->users[$data->receiver_id]['conn']->send($msg);
         }
     }
 
     public function onClose(ConnectionInterface $conn) {
         $this->clients->detach($conn);
-        echo "Connection {$conn->resourceId} has disconnected.\n";
+        foreach ($this->users as $userId => $userData) {
+            if ($userData['conn'] === $conn) {
+                unset($this->users[$userId]);
+                break;
+            }
+        }
     }
 
     public function onError(ConnectionInterface $conn, \Exception $e) {
-        echo "An error has occurred: {$e->getMessage()}\n";
+        echo "Error: {$e->getMessage()}\n";
         $conn->close();
     }
 }
 
-use Ratchet\Server\IoServer;
-use Ratchet\WebSocket\WsServer;
-
+$loop = Factory::create();
+$webSocket = new ChatWebSocket();
 $server = IoServer::factory(
-    new WsServer(
-        new ChatServer()
+    new HttpServer(
+        new WsServer($webSocket)
     ),
     8080
 );
 
+echo "Servidor WebSocket ejecutándose en el puerto 8080...\n";
 $server->run();
