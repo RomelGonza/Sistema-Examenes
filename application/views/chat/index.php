@@ -2,7 +2,7 @@
 <html>
 <head>
     <title>Sistema de Chat</title>
-    <link rel="stylesheet" href="<?php echo base_url('assets/css/chat.css'); ?>">
+    <link rel="stylesheet" href="<?php echo base_url('assets/chat.css'); ?>">
 </head>
 <body>
     <div class="chat-container">
@@ -22,7 +22,7 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="<?php echo base_url('assets/js/chat.js'); ?>"></script>
+    <script src="<?php echo base_url('assets/chat.js'); ?>"></script>
     <script>
         // Inicializar variables globales
         const CONFIG = {
